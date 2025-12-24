@@ -97,7 +97,6 @@
             z-index: 3;
         }
 
-        /* --- REALISTIC FLAME --- */
         .flame {
             position: absolute;
             bottom: 44px; left: 50%;
@@ -128,7 +127,6 @@
         .lit .wick { background: #111; }
         .lit .nozzle { background: #3d1a04; }
 
-        /* UI */
         #wish-banner {
             position: fixed;
             top: 40%; width: 100%;
@@ -137,7 +135,7 @@
             opacity: 0; pointer-events: none;
             transition: 2s; z-index: 100;
         }
-        #wish-banner.show { opacity: 1; }
+        #wish-banner.show { opacity: 1; transform: scale(1.1); }
 
         .button-grid {
             display: grid;
@@ -150,6 +148,43 @@
             border: 1px solid #5d2906; cursor: pointer; border-radius: 4px;
         }
         button.active { background: #1b4d1b; color: white; opacity: 0.5; pointer-events: none; }
+
+        /* --- CONTROL BAR --- */
+        .controls-bar {
+            background: rgba(42, 27, 10, 0.8);
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,215,0,0.2);
+            margin-bottom: 40px;
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gold);
+            font-size: 0.8rem;
+        }
+
+        input[type=range] {
+            cursor: pointer;
+            accent-color: var(--gold);
+        }
+
+        .reset-btn {
+            background: #600;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
 
         #yt-player { position: absolute; top: -1000px; }
     </style>
@@ -165,13 +200,21 @@
 
     <div class="lamp-array" id="lamp-array"></div>
     <div class="button-grid" id="controls"></div>
-    <button onclick="location.reload()" style="margin: 20px; padding: 10px; cursor:pointer;">Reset</button>
+
+    <div class="controls-bar">
+        <div class="volume-container">
+            <span>Volume</span>
+            <input type="range" id="volumeSlider" min="0" max="100" value="50" oninput="updateVolume(this.value)">
+            <button onclick="toggleMute()" id="muteBtn" style="background:none; border:none; color:var(--gold); cursor:pointer; font-size:1.2rem;">🔊</button>
+        </div>
+        <button class="reset-btn" onclick="location.reload()">Master Reset</button>
+    </div>
 
     <div id="yt-player"></div>
 
     <script>
         const participants = ["P 1", "P 2", "P 3", "P 4", "P 5", "P 6", "P 7", "P 8", "P 9", "P 10", "P 11", "P 12", "P 13", "P 14", "P 15"];
-        let player, litCount = 0;
+        let player, litCount = 0, isMuted = false;
 
         // YouTube API
         const tag = document.createElement('script');
@@ -181,8 +224,30 @@
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('yt-player', {
                 height: '0', width: '0', videoId: '325AUsodoBg',
-                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': '325AUsodoBg' }
+                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': '325AUsodoBg' },
+                events: {
+                    'onReady': (event) => { event.target.setVolume(50); }
+                }
             });
+        }
+
+        function updateVolume(val) {
+            if (player && player.setVolume) {
+                player.setVolume(val);
+                document.getElementById('muteBtn').innerText = val == 0 ? "🔇" : "🔊";
+            }
+        }
+
+        function toggleMute() {
+            if (!player) return;
+            if (isMuted) {
+                player.unMute();
+                document.getElementById('muteBtn').innerText = "🔊";
+            } else {
+                player.mute();
+                document.getElementById('muteBtn').innerText = "🔇";
+            }
+            isMuted = !isMuted;
         }
 
         const lampContainer = document.getElementById('lamp-array');
