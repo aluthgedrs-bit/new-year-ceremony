@@ -41,7 +41,7 @@
         .lamp-array {
             position: relative;
             width: 950px;
-            height: 350px;
+            height: 380px;
             display: flex;
             justify-content: center;
             align-items: flex-end;
@@ -52,7 +52,18 @@
         .individual-lamp {
             position: absolute;
             width: 100px;
-            height: 60px;
+            height: 80px;
+            cursor: pointer; /* Makes the whole lamp clickable */
+            text-align: center;
+        }
+
+        /* Participant Name Label above Lamp */
+        .lamp-label {
+            font-size: 0.75rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            opacity: 0.8;
+            pointer-events: none;
         }
 
         .clay-pot {
@@ -67,7 +78,6 @@
             z-index: 1;
         }
 
-        /* Inner Reservoir */
         .clay-pot::after {
             content: '';
             position: absolute;
@@ -78,22 +88,20 @@
             box-shadow: inset 0 4px 8px #000;
         }
 
-        /* The Pinched Nozzle */
         .nozzle {
             position: absolute;
-            top: -6px; left: 50%;
+            top: 20px; left: 50%; /* Adjusted for label */
             transform: translateX(-50%);
             width: 16px; height: 22px;
             background: var(--clay-mid);
             border-radius: 40% 40% 0 0;
             clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
             z-index: 2;
-            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
         .wick {
             position: absolute;
-            top: -12px; left: 50%;
+            top: 10px; left: 50%; /* Adjusted for label */
             transform: translateX(-50%);
             width: 5px; height: 16px;
             background: #fdfdfd;
@@ -105,9 +113,9 @@
 
         .flame {
             position: absolute;
-            bottom: 110%; left: 50%;
+            bottom: 60px; left: 50%; /* Adjusted for label */
             transform: translateX(-50%);
-            width: 20px; height: 48px;
+            width: 22px; height: 50px;
             background: radial-gradient(ellipse at bottom, #fff 0%, #f9e27d 25%, #ff9800 60%, transparent 90%);
             border-radius: 50% 50% 20% 20%;
             opacity: 0;
@@ -122,14 +130,15 @@
             100% { transform: translateX(-50%) scale(1.08) rotate(1deg); }
         }
 
+        /* Light-up State */
         .lit .flame { opacity: 1; box-shadow: 0 -12px 35px #ff6600; }
         .lit .wick { background: #1a1a1a; }
         .lit .nozzle { background: #4a2109; }
+        .lit .lamp-label { opacity: 1; font-weight: bold; text-shadow: 0 0 5px var(--gold); }
 
-        /* --- UI ELEMENTS --- */
         #wish-banner {
             position: absolute;
-            top: 40%;
+            top: 35%;
             font-size: 3rem;
             color: var(--gold);
             font-weight: bold;
@@ -159,13 +168,11 @@
             cursor: pointer;
             font-weight: bold;
             border-radius: 5px;
-            transition: 0.2s;
         }
 
-        button.light-btn.active { background: #28a745; color: white; border-color: white; opacity: 0.7; pointer-events: none; }
+        button.light-btn.active { background: #28a745; color: white; opacity: 0.7; pointer-events: none; }
 
         .master-reset-btn {
-            margin-top: 20px;
             background: #600;
             color: white;
             border: none;
@@ -186,7 +193,7 @@
         <p>1st January 2026</p>
     </div>
 
-    <div id="wish-banner">SUBHA ALUTH AVURUDDAK WEWA!<br><span style="font-size: 1.5rem;">Happy New Year 2026</span></div>
+    <div id="wish-banner">SUBHA ALUTH AVURUDDAK WEWA!<br><span style="font-size: 1.2rem;">Happy New Year 2026</span></div>
 
     <div class="lamp-array" id="lamp-array"></div>
     <div class="button-grid" id="controls"></div>
@@ -197,7 +204,7 @@
     <script>
         const participants = [
             "Participant 1", "Participant 2", "Participant 3", "Participant 4", "Participant 5",
-            "Participant 6", "Participant 7", "Chairperson ", "Participant 9", "Participant 10",
+            "Participant 6", "Participant 7", "Participant 8", "Participant 9", "Participant 10",
             "Participant 11", "Participant 12", "Participant 13", "Participant 14", "Participant 15"
         ];
 
@@ -221,7 +228,6 @@
             });
         }
 
-        // Initialize Screen
         participants.forEach((name, i) => {
             const total = participants.length;
             const angleStep = Math.PI / (total + 1);
@@ -230,6 +236,7 @@
             const x = 475 - Math.cos(currentAngle) * 430 - 50; 
             const y = 220 - Math.sin(currentAngle) * 140;
 
+            // Lamp Element
             const lampDiv = document.createElement('div');
             lampDiv.className = 'individual-lamp';
             lampDiv.id = `lamp-${i}`;
@@ -237,18 +244,21 @@
             lampDiv.style.top = `${y}px`;
             
             lampDiv.innerHTML = `
+                <div class="lamp-label">${name}</div>
                 <div class="flame"></div>
                 <div class="wick"></div>
                 <div class="nozzle"></div>
                 <div class="clay-pot"></div>
             `;
-            lampArray.appendChild(lampDiv);
-
+            
+            // Button Element (Backup)
             const btn = document.createElement('button');
             btn.className = 'light-btn';
             btn.innerText = name;
-            btn.onclick = () => {
-                // Play music from YouTube on first click
+            btn.id = `btn-${i}`;
+
+            // Shared Lighting Function
+            const lightUp = () => {
                 if(litCount === 0 && player && typeof player.playVideo === 'function') {
                     player.playVideo();
                 }
@@ -263,6 +273,12 @@
                     }
                 }
             };
+
+            // Trigger on clicking lamp OR button
+            lampDiv.onclick = lightUp;
+            btn.onclick = lightUp;
+
+            lampArray.appendChild(lampDiv);
             controls.appendChild(btn);
         });
     </script>
