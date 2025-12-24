@@ -6,7 +6,7 @@
     <title>2026 Virtual Oil Lamp Ceremony</title>
     <style>
         :root {
-            --bg-color: #1a1105;
+            --bg-color: #120b02;
             --clay-mid: #a0522d;
             --clay-dark: #5d2906;
             --gold: #ffd700;
@@ -21,31 +21,27 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
             transition: background-color 2s ease;
         }
 
         body.all-lit {
-            background-color: #3d2b16;
-            box-shadow: inset 0 0 200px rgba(255, 215, 0, 0.2);
+            background-color: #2a1b0a;
+            box-shadow: inset 0 0 200px rgba(255, 140, 0, 0.2);
         }
 
         .header {
             text-align: center;
             padding: 20px;
             width: 100%;
-            border-bottom: 1px solid rgba(255,215,0,0.2);
-            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,215,0,0.1);
         }
 
         .lamp-array {
             position: relative;
             width: 950px;
-            height: 380px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            margin-bottom: 20px;
+            height: 400px;
+            margin-top: 20px;
         }
 
         /* --- REALISTIC MATI PAHANA --- */
@@ -53,96 +49,110 @@
             position: absolute;
             width: 100px;
             height: 80px;
-            cursor: pointer; /* Makes the whole lamp clickable */
-            text-align: center;
-        }
-
-        /* Participant Name Label above Lamp */
-        .lamp-label {
-            font-size: 0.75rem;
-            color: var(--gold);
-            margin-bottom: 15px;
-            opacity: 0.8;
-            pointer-events: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
         }
 
         .clay-pot {
             position: relative;
             width: 80px;
-            height: 38px;
+            height: 36px;
             background: radial-gradient(ellipse at center, var(--clay-mid) 0%, var(--clay-dark) 100%);
             border-radius: 50% 50% 45% 45%;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.7);
-            border: 1px solid rgba(0,0,0,0.3);
-            margin: 0 auto;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+            border: 1px solid rgba(0,0,0,0.4);
             z-index: 1;
         }
 
+        /* Oil reservoir depth */
         .clay-pot::after {
             content: '';
             position: absolute;
             top: 4px; left: 10%;
             width: 80%; height: 60%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             border-radius: 50%;
-            box-shadow: inset 0 4px 8px #000;
+            box-shadow: inset 0 4px 10px #000;
         }
 
         .nozzle {
             position: absolute;
-            top: 20px; left: 50%; /* Adjusted for label */
+            bottom: 28px; left: 50%;
             transform: translateX(-50%);
-            width: 16px; height: 22px;
+            width: 14px; height: 20px;
             background: var(--clay-mid);
-            border-radius: 40% 40% 0 0;
-            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+            border-radius: 50% 50% 0 0;
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
             z-index: 2;
+            transition: background 1s;
         }
 
         .wick {
             position: absolute;
-            top: 10px; left: 50%; /* Adjusted for label */
+            bottom: 34px; left: 50%;
             transform: translateX(-50%);
-            width: 5px; height: 16px;
-            background: #fdfdfd;
-            border-radius: 4px;
+            width: 4px; height: 14px;
+            background: #eee;
+            border-radius: 2px;
             z-index: 3;
-            box-shadow: 0 0 4px rgba(255,255,255,0.4);
-            transition: background 1s;
+            box-shadow: 0 0 2px rgba(255,255,255,0.3);
+            transition: background 0.5s;
         }
 
+        /* --- HIGH REALISM FLAME --- */
         .flame {
             position: absolute;
-            bottom: 60px; left: 50%; /* Adjusted for label */
-            transform: translateX(-50%);
-            width: 22px; height: 50px;
-            background: radial-gradient(ellipse at bottom, #fff 0%, #f9e27d 25%, #ff9800 60%, transparent 90%);
-            border-radius: 50% 50% 20% 20%;
-            opacity: 0;
-            filter: blur(0.8px);
-            animation: flicker 0.1s infinite alternate;
+            bottom: 44px; left: 50%;
+            transform: translateX(-50%) scale(0);
+            width: 18px;
+            height: 45px;
             z-index: 4;
-            transition: opacity 0.6s ease;
+            filter: blur(0.5px);
+            transform-origin: bottom center;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
+            pointer-events: none;
         }
 
-        @keyframes flicker {
-            0% { transform: translateX(-50%) scale(1) rotate(-1deg); }
-            100% { transform: translateX(-50%) scale(1.08) rotate(1deg); }
+        .flame-main {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, rgba(255,255,255,1) 0%, rgba(255,240,150,0.9) 20%, rgba(255,150,0,0.8) 50%, transparent 80%);
+            border-radius: 50% 50% 20% 20%;
+            animation: move-flame 0.12s infinite alternate;
         }
 
-        /* Light-up State */
-        .lit .flame { opacity: 1; box-shadow: 0 -12px 35px #ff6600; }
-        .lit .wick { background: #1a1a1a; }
-        .lit .nozzle { background: #4a2109; }
-        .lit .lamp-label { opacity: 1; font-weight: bold; text-shadow: 0 0 5px var(--gold); }
+        /* Glowing aura around flame */
+        .flame-glow {
+            position: absolute;
+            bottom: -5px; left: -10px;
+            width: 40px; height: 60px;
+            background: radial-gradient(circle, rgba(255, 100, 0, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
 
+        @keyframes move-flame {
+            0% { transform: scale(1) rotate(-1deg); }
+            100% { transform: scale(1.05) rotate(1.1deg) skewX(1deg); }
+        }
+
+        .lit .flame { transform: translateX(-50%) scale(1); opacity: 1; }
+        .lit .flame-glow { opacity: 1; }
+        .lit .wick { background: #111; }
+        .lit .nozzle { background: #3d1a04; }
+
+        /* --- UI ELEMENTS --- */
         #wish-banner {
             position: absolute;
-            top: 35%;
+            top: 40%;
             font-size: 3rem;
             color: var(--gold);
             font-weight: bold;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            text-shadow: 0 0 25px rgba(255, 165, 0, 0.7);
             opacity: 0;
             transform: scale(0.8);
             transition: all 1.5s ease;
@@ -156,31 +166,32 @@
         .button-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
+            gap: 10px;
             padding: 20px;
         }
 
         button.light-btn {
-            padding: 10px 15px;
-            background: #4a3419;
-            color: var(--gold);
-            border: 1px solid var(--clay-mid);
+            padding: 8px 12px;
+            background: #2a1b0a;
+            color: #d4af37;
+            border: 1px solid #5d2906;
             cursor: pointer;
-            font-weight: bold;
-            border-radius: 5px;
+            border-radius: 4px;
+            font-size: 0.85rem;
         }
 
-        button.light-btn.active { background: #28a745; color: white; opacity: 0.7; pointer-events: none; }
+        button.light-btn.active { background: #1b4d1b; color: white; border-color: #fff; opacity: 0.6; pointer-events: none; }
 
         .master-reset-btn {
-            background: #600;
-            color: white;
+            background: #440000;
+            color: #ccc;
             border: none;
-            padding: 12px 30px;
-            font-weight: bold;
-            border-radius: 30px;
+            padding: 10px 25px;
+            border-radius: 20px;
             cursor: pointer;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
         }
 
         #yt-player { position: absolute; top: -1000px; left: -1000px; }
@@ -189,8 +200,8 @@
 <body>
 
     <div class="header">
-        <h1>Virtual New Year Lighting Ceremony</h1>
-        <p>1st January 2026</p>
+        <h2 style="margin: 5px; color: #d4af37;">Virtual Opening Ceremony</h2>
+        <p style="margin: 0; font-size: 0.9rem; color: #888;">Touch a lamp to light it</p>
     </div>
 
     <div id="wish-banner">SUBHA ALUTH AVURUDDAK WEWA!<br><span style="font-size: 1.2rem;">Happy New Year 2026</span></div>
@@ -234,9 +245,8 @@
             const currentAngle = angleStep * (i + 1);
             
             const x = 475 - Math.cos(currentAngle) * 430 - 50; 
-            const y = 220 - Math.sin(currentAngle) * 140;
+            const y = 230 - Math.sin(currentAngle) * 150;
 
-            // Lamp Element
             const lampDiv = document.createElement('div');
             lampDiv.className = 'individual-lamp';
             lampDiv.id = `lamp-${i}`;
@@ -244,43 +254,6 @@
             lampDiv.style.top = `${y}px`;
             
             lampDiv.innerHTML = `
-                <div class="lamp-label">${name}</div>
-                <div class="flame"></div>
-                <div class="wick"></div>
-                <div class="nozzle"></div>
-                <div class="clay-pot"></div>
-            `;
-            
-            // Button Element (Backup)
-            const btn = document.createElement('button');
-            btn.className = 'light-btn';
-            btn.innerText = name;
-            btn.id = `btn-${i}`;
-
-            // Shared Lighting Function
-            const lightUp = () => {
-                if(litCount === 0 && player && typeof player.playVideo === 'function') {
-                    player.playVideo();
-                }
-                
-                if(!lampDiv.classList.contains('lit')) {
-                    lampDiv.classList.add('lit');
-                    btn.classList.add('active');
-                    litCount++;
-                    if(litCount === total) {
-                        document.body.classList.add('all-lit');
-                        banner.classList.add('show');
-                    }
-                }
-            };
-
-            // Trigger on clicking lamp OR button
-            lampDiv.onclick = lightUp;
-            btn.onclick = lightUp;
-
-            lampArray.appendChild(lampDiv);
-            controls.appendChild(btn);
-        });
-    </script>
-</body>
-</html>
+                <div class="flame-glow"></div>
+                <div class="flame"><div class="flame-main"></div></div>
+                <div class="
