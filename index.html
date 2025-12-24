@@ -21,7 +21,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
             transition: background-color 2s ease;
         }
 
@@ -39,12 +39,12 @@
 
         .lamp-array {
             position: relative;
-            width: 950px;
-            height: 400px;
+            width: 100%;
+            max-width: 950px;
+            height: 380px;
             margin-top: 20px;
         }
 
-        /* --- REALISTIC MATI PAHANA --- */
         .individual-lamp {
             position: absolute;
             width: 100px;
@@ -66,7 +66,6 @@
             z-index: 1;
         }
 
-        /* Oil reservoir depth */
         .clay-pot::after {
             content: '';
             position: absolute;
@@ -86,7 +85,6 @@
             border-radius: 50% 50% 0 0;
             clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
             z-index: 2;
-            transition: background 1s;
         }
 
         .wick {
@@ -97,11 +95,9 @@
             background: #eee;
             border-radius: 2px;
             z-index: 3;
-            box-shadow: 0 0 2px rgba(255,255,255,0.3);
-            transition: background 0.5s;
         }
 
-        /* --- HIGH REALISM FLAME --- */
+        /* --- REALISTIC FLAME --- */
         .flame {
             position: absolute;
             bottom: 44px; left: 50%;
@@ -117,143 +113,113 @@
 
         .flame-main {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at bottom, rgba(255,255,255,1) 0%, rgba(255,240,150,0.9) 20%, rgba(255,150,0,0.8) 50%, transparent 80%);
+            width: 100%; height: 100%;
+            background: radial-gradient(ellipse at bottom, #fff 0%, #f9e27d 20%, #ff9800 50%, transparent 80%);
             border-radius: 50% 50% 20% 20%;
-            animation: move-flame 0.12s infinite alternate;
+            animation: flicker-anim 0.1s infinite alternate;
         }
 
-        /* Glowing aura around flame */
-        .flame-glow {
-            position: absolute;
-            bottom: -5px; left: -10px;
-            width: 40px; height: 60px;
-            background: radial-gradient(circle, rgba(255, 100, 0, 0.3) 0%, transparent 70%);
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
-        @keyframes move-flame {
+        @keyframes flicker-anim {
             0% { transform: scale(1) rotate(-1deg); }
-            100% { transform: scale(1.05) rotate(1.1deg) skewX(1deg); }
+            100% { transform: scale(1.05) rotate(1.5deg); }
         }
 
         .lit .flame { transform: translateX(-50%) scale(1); opacity: 1; }
-        .lit .flame-glow { opacity: 1; }
         .lit .wick { background: #111; }
         .lit .nozzle { background: #3d1a04; }
 
-        /* --- UI ELEMENTS --- */
+        /* UI */
         #wish-banner {
-            position: absolute;
-            top: 40%;
-            font-size: 3rem;
-            color: var(--gold);
-            font-weight: bold;
-            text-shadow: 0 0 25px rgba(255, 165, 0, 0.7);
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 1.5s ease;
-            text-align: center;
-            z-index: 100;
-            pointer-events: none;
+            position: fixed;
+            top: 40%; width: 100%;
+            font-size: 3rem; color: var(--gold);
+            font-weight: bold; text-align: center;
+            opacity: 0; pointer-events: none;
+            transition: 2s; z-index: 100;
         }
-
-        #wish-banner.show { opacity: 1; transform: scale(1); }
+        #wish-banner.show { opacity: 1; }
 
         .button-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            padding: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px; width: 90%; max-width: 900px; padding: 20px;
         }
 
         button.light-btn {
-            padding: 8px 12px;
-            background: #2a1b0a;
-            color: #d4af37;
-            border: 1px solid #5d2906;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 0.85rem;
+            padding: 10px; background: #2a1b0a; color: #d4af37;
+            border: 1px solid #5d2906; cursor: pointer; border-radius: 4px;
         }
+        button.active { background: #1b4d1b; color: white; opacity: 0.5; pointer-events: none; }
 
-        button.light-btn.active { background: #1b4d1b; color: white; border-color: #fff; opacity: 0.6; pointer-events: none; }
-
-        .master-reset-btn {
-            background: #440000;
-            color: #ccc;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-bottom: 30px;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-        }
-
-        #yt-player { position: absolute; top: -1000px; left: -1000px; }
+        #yt-player { position: absolute; top: -1000px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h2 style="margin: 5px; color: #d4af37;">Virtual Opening Ceremony</h2>
-        <p style="margin: 0; font-size: 0.9rem; color: #888;">Touch a lamp to light it</p>
+        <h2 style="color: #d4af37;">Virtual New Year Ceremony 2026</h2>
+        <p>Touch a lamp to light it</p>
     </div>
 
-    <div id="wish-banner">SUBHA ALUTH AVURUDDAK WEWA!<br><span style="font-size: 1.2rem;">Happy New Year 2026</span></div>
+    <div id="wish-banner">SUBHA ALUTH AVURUDDAK WEWA!</div>
 
     <div class="lamp-array" id="lamp-array"></div>
     <div class="button-grid" id="controls"></div>
-    <button class="master-reset-btn" onclick="location.reload()">Master Reset</button>
+    <button onclick="location.reload()" style="margin: 20px; padding: 10px; cursor:pointer;">Reset</button>
 
     <div id="yt-player"></div>
 
     <script>
-        const participants = [
-            "Participant 1", "Participant 2", "Participant 3", "Participant 4", "Participant 5",
-            "Participant 6", "Participant 7", "Participant 8", "Participant 9", "Participant 10",
-            "Participant 11", "Participant 12", "Participant 13", "Participant 14", "Participant 15"
-        ];
+        const participants = ["P 1", "P 2", "P 3", "P 4", "P 5", "P 6", "P 7", "P 8", "P 9", "P 10", "P 11", "P 12", "P 13", "P 14", "P 15"];
+        let player, litCount = 0;
 
-        const lampArray = document.getElementById('lamp-array');
-        const controls = document.getElementById('controls');
-        const banner = document.getElementById('wish-banner');
-        let litCount = 0;
-        let player;
-
-        // Load YouTube API
-        var tag = document.createElement('script');
+        // YouTube API
+        const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        document.head.appendChild(tag);
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('yt-player', {
-                height: '0', width: '0',
-                videoId: '325AUsodoBg', 
-                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': '325AUsodoBg' }
+                height: '0', width: '0', videoId: '325AUsodoBg',
+                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': '325AUsodoBg' }
             });
         }
 
-        participants.forEach((name, i) => {
-            const total = participants.length;
-            const angleStep = Math.PI / (total + 1);
-            const currentAngle = angleStep * (i + 1);
-            
-            const x = 475 - Math.cos(currentAngle) * 430 - 50; 
-            const y = 230 - Math.sin(currentAngle) * 150;
+        const lampContainer = document.getElementById('lamp-array');
+        const controlContainer = document.getElementById('controls');
 
-            const lampDiv = document.createElement('div');
-            lampDiv.className = 'individual-lamp';
-            lampDiv.id = `lamp-${i}`;
-            lampDiv.style.left = `${x}px`;
-            lampDiv.style.top = `${y}px`;
+        participants.forEach((name, i) => {
+            const angle = (i / (participants.length - 1)) * Math.PI;
+            const x = 475 - Math.cos(angle) * 400 - 50;
+            const y = 250 - Math.sin(angle) * 150;
+
+            const lamp = document.createElement('div');
+            lamp.className = 'individual-lamp';
+            lamp.style.left = `${x}px`; lamp.style.top = `${y}px`;
+            lamp.innerHTML = `<div class="flame"><div class="flame-main"></div></div><div class="wick"></div><div class="nozzle"></div><div class="clay-pot"></div>`;
             
-            lampDiv.innerHTML = `
-                <div class="flame-glow"></div>
-                <div class="flame"><div class="flame-main"></div></div>
-                <div class="
+            const btn = document.createElement('button');
+            btn.className = 'light-btn';
+            btn.innerText = name;
+
+            const light = () => {
+                if (litCount === 0 && player && player.playVideo) player.playVideo();
+                if (!lamp.classList.contains('lit')) {
+                    lamp.classList.add('lit');
+                    btn.classList.add('active');
+                    litCount++;
+                    if (litCount === participants.length) {
+                        document.getElementById('wish-banner').classList.add('show');
+                        document.body.classList.add('all-lit');
+                    }
+                }
+            };
+
+            lamp.onclick = light;
+            btn.onclick = light;
+            lampContainer.appendChild(lamp);
+            controlContainer.appendChild(btn);
+        });
+    </script>
+</body>
+</html>
