@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 New Year Ceremony</title>
+    <title>2026 Virtual Oil Lamp Ceremony</title>
     <style>
         :root {
             --bg-color: #120b02;
@@ -37,13 +37,12 @@
             border-bottom: 1px solid rgba(255,215,0,0.1);
         }
 
-        /* Adjusted for 5 lamps */
         .lamp-array {
             position: relative;
             width: 100%;
-            max-width: 800px;
-            height: 350px;
-            margin-top: 40px;
+            max-width: 900px;
+            height: 380px;
+            margin-top: 30px;
         }
 
         .individual-lamp {
@@ -58,8 +57,8 @@
 
         .clay-pot {
             position: relative;
-            width: 90px;
-            height: 40px;
+            width: 85px;
+            height: 38px;
             background: radial-gradient(ellipse at center, var(--clay-mid) 0%, var(--clay-dark) 100%);
             border-radius: 50% 50% 45% 45%;
             box-shadow: 0 10px 20px rgba(0,0,0,0.8);
@@ -79,9 +78,9 @@
 
         .nozzle {
             position: absolute;
-            bottom: 32px; left: 50%;
+            bottom: 30px; left: 50%;
             transform: translateX(-50%);
-            width: 16px; height: 22px;
+            width: 15px; height: 21px;
             background: var(--clay-mid);
             border-radius: 50% 50% 0 0;
             clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
@@ -90,21 +89,20 @@
 
         .wick {
             position: absolute;
-            bottom: 38px; left: 50%;
+            bottom: 36px; left: 50%;
             transform: translateX(-50%);
-            width: 4px; height: 16px;
+            width: 4px; height: 15px;
             background: #eee;
             border-radius: 2px;
             z-index: 3;
         }
 
-        /* --- REALISTIC FLAME --- */
         .flame {
             position: absolute;
-            bottom: 50px; left: 50%;
+            bottom: 48px; left: 50%;
             transform: translateX(-50%) scale(0);
-            width: 22px;
-            height: 52px;
+            width: 20px;
+            height: 50px;
             z-index: 4;
             filter: blur(0.5px);
             transform-origin: bottom center;
@@ -129,35 +127,36 @@
         .lit .wick { background: #111; }
         .lit .nozzle { background: #3d1a04; }
 
+        /* WISH BANNER */
         #wish-banner {
             position: fixed;
             top: 40%; width: 100%;
-            font-size: 2.5rem; color: var(--gold);
+            font-size: 3rem; color: var(--gold);
             font-weight: bold; text-align: center;
             opacity: 0; pointer-events: none;
-            transition: 2s; z-index: 100;
-            text-shadow: 0 0 30px rgba(255, 140, 0, 0.8);
+            transition: 2.5s ease; z-index: 100;
+            text-shadow: 0 0 30px rgba(255, 140, 0, 0.9);
+            line-height: 1.2;
         }
-        #wish-banner.show { opacity: 1; transform: scale(1.1); }
+        #wish-banner.show { opacity: 1; transform: scale(1.05); }
 
         .button-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px; width: 90%; max-width: 800px; padding: 20px;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px; width: 95%; max-width: 900px; padding: 20px;
             margin-top: 20px;
         }
 
         button.light-btn {
-            padding: 12px; background: #2a1b0a; color: #d4af37;
+            padding: 10px 5px; background: #2a1b0a; color: #d4af37;
             border: 1px solid #5d2906; cursor: pointer; border-radius: 4px;
-            font-weight: bold;
+            font-weight: bold; font-size: 0.8rem;
         }
         button.active { background: #1b4d1b; color: white; opacity: 0.5; pointer-events: none; }
 
-        /* CONTROL BAR */
         .controls-bar {
             background: rgba(42, 27, 10, 0.8);
-            padding: 15px 30px;
+            padding: 12px 25px;
             border-radius: 50px;
             display: flex;
             align-items: center;
@@ -189,11 +188,14 @@
 <body>
 
     <div class="header">
-        <h2 style="color: #d4af37; margin-bottom: 5px;">New Year Ceremony 2026</h2>
-        <p style="margin:0; font-size: 0.9rem;">Touch a lamp to light it</p>
+        <h2 style="color: #d4af37; margin-bottom: 5px;"> New Year Ceremony 2026</h2>
+        <p style="margin:0; font-size: 0.9rem; color: #aaa;">Touch a lamp to light it</p>
     </div>
 
-    <div id="wish-banner">SUBHA ALUTH AVURUDDAK WEWA! Happy New Year 2026! </div>
+    <div id="wish-banner">
+        SUBHA ALUTH AVURUDDAK WEWA!<br>
+        <span style="font-size: 1.8rem; letter-spacing: 2px;">Happy New Year 2026!</span>
+    </div>
 
     <div class="lamp-array" id="lamp-array"></div>
     <div class="button-grid" id="controls"></div>
@@ -210,8 +212,8 @@
     <div id="yt-player"></div>
 
     <script>
-        // Updated to 5 Participants
-        const participants = ["Participant 1", "Participant 2", "Participant 3", "Participant 4", "Participant 5"];
+        // Updated to 7 Participants
+        const participants = ["P 1", "P 2", "P 3", "P 4", "P 5", "P 6", "P 7"];
         let player, litCount = 0, isMuted = false;
 
         const tag = document.createElement('script');
@@ -245,10 +247,9 @@
 
         participants.forEach((name, i) => {
             const total = participants.length;
-            // Spacing for 5 lamps
             const angle = (i / (total - 1)) * Math.PI;
-            const x = 400 - Math.cos(angle) * 350 - 50; 
-            const y = 250 - Math.sin(angle) * 150;
+            const x = 450 - Math.cos(angle) * 410 - 50; 
+            const y = 280 - Math.sin(angle) * 160;
 
             const lamp = document.createElement('div');
             lamp.className = 'individual-lamp';
