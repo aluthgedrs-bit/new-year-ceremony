@@ -6,35 +6,39 @@
     <title>2026 Virtual Oil Lamp Ceremony</title>
     <style>
         :root {
-            --bg-color: #120b02;
+            /* Updated Colors */
+            --bg-color: #ffffff;
+            --text-color: #333333;
             --clay-mid: #a0522d;
             --clay-dark: #5d2906;
-            --gold: #ffd700;
+            --gold: #d4af37;
+            --accent-blue: #3498db;
         }
 
         body {
             background-color: var(--bg-color);
-            color: white;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background-color 2s ease;
+            transition: background-color 1s ease;
         }
 
+        /* Subtle warm glow when finished */
         body.all-lit {
-            background-color: #2a1b0a;
-            box-shadow: inset 0 0 200px rgba(255, 140, 0, 0.2);
+            background-color: #fffaf0;
         }
 
         .header {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             width: 100%;
-            border-bottom: 1px solid rgba(255,215,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .lamp-array {
@@ -61,8 +65,8 @@
             height: 38px;
             background: radial-gradient(ellipse at center, var(--clay-mid) 0%, var(--clay-dark) 100%);
             border-radius: 50% 50% 45% 45%;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-            border: 1px solid rgba(0,0,0,0.4);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(0,0,0,0.1);
             z-index: 1;
         }
 
@@ -71,7 +75,7 @@
             position: absolute;
             top: 4px; left: 10%;
             width: 80%; height: 60%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.4);
             border-radius: 50%;
             box-shadow: inset 0 4px 10px #000;
         }
@@ -82,7 +86,6 @@
             transform: translateX(-50%);
             width: 15px; height: 21px;
             background: var(--clay-mid);
-            border-radius: 50% 50% 0 0;
             clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
             z-index: 2;
         }
@@ -92,7 +95,7 @@
             bottom: 36px; left: 50%;
             transform: translateX(-50%);
             width: 4px; height: 15px;
-            background: #eee;
+            background: #666;
             border-radius: 2px;
             z-index: 3;
         }
@@ -113,7 +116,7 @@
         .flame-main {
             position: absolute;
             width: 100%; height: 100%;
-            background: radial-gradient(ellipse at bottom, #fff 0%, #f9e27d 20%, #ff9800 50%, transparent 80%);
+            background: radial-gradient(ellipse at bottom, #fff 0%, #ffeb3b 20%, #ff9800 50%, transparent 80%);
             border-radius: 50% 50% 20% 20%;
             animation: flicker-anim 0.1s infinite alternate;
         }
@@ -125,21 +128,20 @@
 
         .lit .flame { transform: translateX(-50%) scale(1); opacity: 1; }
         .lit .wick { background: #111; }
-        .lit .nozzle { background: #3d1a04; }
 
         /* WISH BANNER */
         #wish-banner {
             position: fixed;
-            top: 40%; width: 100%;
-            font-size: 3rem; color: var(--gold);
+            top: 35%; width: 100%;
+            font-size: 3.5rem; color: #e67e22;
             font-weight: bold; text-align: center;
             opacity: 0; pointer-events: none;
-            transition: 2.5s ease; z-index: 100;
-            text-shadow: 0 0 30px rgba(255, 140, 0, 0.9);
-            line-height: 1.2;
+            transition: 2s ease; z-index: 100;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.1);
         }
-        #wish-banner.show { opacity: 1; transform: scale(1.05); }
+        #wish-banner.show { opacity: 1; transform: scale(1); }
 
+        /* COLORFUL BUTTON GRID */
         .button-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -148,36 +150,44 @@
         }
 
         button.light-btn {
-            padding: 10px 5px; background: #2a1b0a; color: #d4af37;
-            border: 1px solid #5d2906; cursor: pointer; border-radius: 4px;
-            font-weight: bold; font-size: 0.8rem;
+            padding: 12px 5px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        button.active { background: #1b4d1b; color: white; opacity: 0.5; pointer-events: none; }
+
+        button.light-btn:hover { transform: translateY(-2px); }
+        button.active { background: #bdc3c7 !important; color: #7f8c8d; opacity: 0.6; pointer-events: none; box-shadow: none; }
 
         .controls-bar {
-            background: rgba(42, 27, 10, 0.8);
-            padding: 12px 25px;
+            background: #f8f9fa;
+            padding: 15px 30px;
             border-radius: 50px;
             display: flex;
             align-items: center;
             gap: 20px;
             margin-top: 20px;
-            border: 1px solid rgba(255,215,0,0.2);
+            border: 1px solid #eee;
             margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .volume-container {
             display: flex;
             align-items: center;
             gap: 10px;
-            color: var(--gold);
+            color: #555;
             font-size: 0.9rem;
         }
 
-        input[type=range] { cursor: pointer; accent-color: var(--gold); }
-
+        input[type=range] { cursor: pointer; accent-color: var(--accent-blue); }
         .reset-btn {
-            background: #600; color: white; border: none;
+            background: #e74c3c; color: white; border: none;
             padding: 8px 20px; border-radius: 20px; cursor: pointer;
             font-weight: bold; font-size: 0.8rem;
         }
@@ -188,13 +198,13 @@
 <body>
 
     <div class="header">
-        <h2 style="color: #d4af37; margin-bottom: 5px;"> New Year Ceremony 2026</h2>
-        <p style="margin:0; font-size: 0.9rem; color: #aaa;">Touch a lamp to light it</p>
+        <h2 style="color: #2c3e50; margin: 0;">New Year Ceremony 2026</h2>
+        <p style="margin: 5px 0 0 0; font-size: 0.95rem; color: #7f8c8d;">Select a participant to light a lamp</p>
     </div>
 
     <div id="wish-banner">
         SUBHA NAWA VASARAK WEWA!<br>
-        <span style="font-size: 2.8rem; letter-spacing: 2px;">Happy New Year 2026!</span>
+        <span style="font-size: 2.5rem; color: #f39c12;">Happy New Year 2026!</span>
     </div>
 
     <div class="lamp-array" id="lamp-array"></div>
@@ -202,18 +212,20 @@
 
     <div class="controls-bar">
         <div class="volume-container">
-            <span>Volume</span>
+            <span>Audio Volume</span>
             <input type="range" id="volumeSlider" min="0" max="100" value="50" oninput="updateVolume(this.value)">
-            <button onclick="toggleMute()" id="muteBtn" style="background:none; border:none; color:var(--gold); cursor:pointer; font-size: 1.2rem;">🔊</button>
+            <button onclick="toggleMute()" id="muteBtn" style="background:none; border:none; color:#555; cursor:pointer; font-size: 1.2rem;">🔊</button>
         </div>
-        <button class="reset-btn" onclick="location.reload()">Master Reset</button>
+        <button class="reset-btn" onclick="location.reload()">Reset Ceremony</button>
     </div>
 
     <div id="yt-player"></div>
 
     <script>
-        // Updated to 7 Participants
         const participants = ["P 1", "P 2", "P 3", "P 4", "P 5", "P 6", "P 7"];
+        // Colorful palette for buttons
+        const colors = ["#FF5733", "#33FF57", "#3357FF", "#F333FF", "#FF33A8", "#33FFF5", "#FFC300"];
+        
         let player, litCount = 0, isMuted = false;
 
         const tag = document.createElement('script');
@@ -258,6 +270,7 @@
             
             const btn = document.createElement('button');
             btn.className = 'light-btn';
+            btn.style.backgroundColor = colors[i]; // Apply colorful background
             btn.innerText = name;
 
             const light = () => {
