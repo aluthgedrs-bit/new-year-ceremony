@@ -6,7 +6,6 @@
     <title>2026 Virtual Oil Lamp Ceremony</title>
     <style>
         :root {
-            /* Updated Colors */
             --bg-color: #ffffff;
             --text-color: #333333;
             --clay-mid: #a0522d;
@@ -28,7 +27,6 @@
             transition: background-color 1s ease;
         }
 
-        /* Subtle warm glow when finished */
         body.all-lit {
             background-color: #fffaf0;
         }
@@ -45,7 +43,7 @@
             position: relative;
             width: 100%;
             max-width: 900px;
-            height: 380px;
+            height: 450px; /* Slightly taller since buttons are gone */
             margin-top: 30px;
         }
 
@@ -57,6 +55,11 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
+            transition: transform 0.2s;
+        }
+        
+        .individual-lamp:hover {
+            transform: scale(1.05);
         }
 
         .clay-pot {
@@ -128,11 +131,11 @@
 
         .lit .flame { transform: translateX(-50%) scale(1); opacity: 1; }
         .lit .wick { background: #111; }
+        .lit { cursor: default; }
 
-        /* WISH BANNER */
         #wish-banner {
             position: fixed;
-            top: 35%; width: 100%;
+            top: 40%; width: 100%;
             font-size: 3.5rem; color: #e67e22;
             font-weight: bold; text-align: center;
             opacity: 0; pointer-events: none;
@@ -141,29 +144,6 @@
         }
         #wish-banner.show { opacity: 1; transform: scale(1); }
 
-        /* COLORFUL BUTTON GRID */
-        .button-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 12px; width: 95%; max-width: 900px; padding: 20px;
-            margin-top: 20px;
-        }
-
-        button.light-btn {
-            padding: 12px 5px;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        button.light-btn:hover { transform: translateY(-2px); }
-        button.active { background: #bdc3c7 !important; color: #7f8c8d; opacity: 0.6; pointer-events: none; box-shadow: none; }
-
         .controls-bar {
             background: #f8f9fa;
             padding: 15px 30px;
@@ -171,7 +151,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            margin-top: 20px;
+            margin-top: 40px;
             border: 1px solid #eee;
             margin-bottom: 40px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -199,7 +179,7 @@
 
     <div class="header">
         <h2 style="color: #2c3e50; margin: 0;">New Year Ceremony 2026</h2>
-        <p style="margin: 5px 0 0 0; font-size: 0.95rem; color: #7f8c8d;">Select a participant to light a lamp</p>
+        <p style="margin: 5px 0 0 0; font-size: 0.95rem; color: #7f8c8d;">Touch each lamp to light it</p>
     </div>
 
     <div id="wish-banner">
@@ -208,7 +188,6 @@
     </div>
 
     <div class="lamp-array" id="lamp-array"></div>
-    <div class="button-grid" id="controls"></div>
 
     <div class="controls-bar">
         <div class="volume-container">
@@ -222,10 +201,7 @@
     <div id="yt-player"></div>
 
     <script>
-        const participants = ["P 1", "P 2", "P 3", "P 4", "P 5", "P 6", "P 7"];
-        // Colorful palette for buttons
-        const colors = ["#FF5733", "#33FF57", "#3357FF", "#F333FF", "#FF33A8", "#33FFF5", "#FFC300"];
-        
+        const lampCount = 7;
         let player, litCount = 0, isMuted = false;
 
         const tag = document.createElement('script');
@@ -255,42 +231,36 @@
         }
 
         const lampContainer = document.getElementById('lamp-array');
-        const controlContainer = document.getElementById('controls');
 
-        participants.forEach((name, i) => {
-            const total = participants.length;
-            const angle = (i / (total - 1)) * Math.PI;
+        for (let i = 0; i < lampCount; i++) {
+            const angle = (i / (lampCount - 1)) * Math.PI;
             const x = 450 - Math.cos(angle) * 410 - 50; 
-            const y = 280 - Math.sin(angle) * 160;
+            const y = 300 - Math.sin(angle) * 160;
 
             const lamp = document.createElement('div');
             lamp.className = 'individual-lamp';
             lamp.style.left = `${x}px`; lamp.style.top = `${y}px`;
-            lamp.innerHTML = `<div class="flame"><div class="flame-main"></div></div><div class="wick"></div><div class="nozzle"></div><div class="clay-pot"></div>`;
+            lamp.innerHTML = `
+                <div class="flame"><div class="flame-main"></div></div>
+                <div class="wick"></div>
+                <div class="nozzle"></div>
+                <div class="clay-pot"></div>
+            `;
             
-            const btn = document.createElement('button');
-            btn.className = 'light-btn';
-            btn.style.backgroundColor = colors[i]; // Apply colorful background
-            btn.innerText = name;
-
-            const light = () => {
+            lamp.onclick = () => {
                 if (litCount === 0 && player && player.playVideo) player.playVideo();
                 if (!lamp.classList.contains('lit')) {
                     lamp.classList.add('lit');
-                    btn.classList.add('active');
                     litCount++;
-                    if (litCount === total) {
+                    if (litCount === lampCount) {
                         document.getElementById('wish-banner').classList.add('show');
                         document.body.classList.add('all-lit');
                     }
                 }
             };
 
-            lamp.onclick = light;
-            btn.onclick = light;
             lampContainer.appendChild(lamp);
-            controlContainer.appendChild(btn);
-        });
+        }
     </script>
 </body>
 </html>
