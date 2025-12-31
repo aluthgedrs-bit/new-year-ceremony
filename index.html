@@ -227,7 +227,7 @@
             <input type="range" id="volumeSlider" min="0" max="100" value="50" oninput="updateVolume(this.value)">
             <button onclick="toggleMute()" id="muteBtn" style="background:none; border:none; color:#555; cursor:pointer; font-size: 1.2rem;">🔊</button>
         </div>
-        <button class="reset-btn" onclick="location.reload()">Reset Ceremony</button>
+        <button class="reset-btn" onclick="location.reload()">Reset</button>
     </div>
 
     <div id="yt-player"></div>
@@ -264,7 +264,7 @@
 
         function createPetals() {
             const petalColors = ['#ff9a9e', '#fad0c4', '#ffd1ff', '#fff', '#ffc0cb'];
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 100; i++) {
                 const petal = document.createElement('div');
                 petal.className = 'petal';
                 
