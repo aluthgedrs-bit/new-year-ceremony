@@ -24,11 +24,9 @@
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
-            /* Slow, smooth transition for the sunset effect */
             transition: background 3s ease, color 2s ease;
         }
 
-        /* SUNSET GRADIENT EFFECT */
         body.all-lit {
             background: linear-gradient(180deg, #ff9a9e 0%, #fad0c4 30%, #ffd1ff 100%);
             color: #2c3e50;
@@ -79,7 +77,6 @@
             transition: box-shadow 1s ease;
         }
 
-        /* Glow on the pot when lit */
         .lit .clay-pot {
             box-shadow: 0 6px 20px rgba(255, 140, 0, 0.5), inset 0 2px 10px rgba(255, 255, 255, 0.2);
         }
@@ -114,7 +111,6 @@
             z-index: 3;
         }
 
-        /* --- REALISTIC FLAME STYLES --- */
         .flame {
             position: absolute;
             bottom: 46px; left: 50%;
@@ -194,6 +190,21 @@
         }
 
         #yt-player { position: absolute; top: -1000px; }
+
+        /* --- FLOWER PETAL EFFECTS --- */
+        .petal {
+            position: fixed;
+            top: -50px;
+            z-index: 5;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) translateX(100px) rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -251,6 +262,34 @@
             isMuted = !isMuted;
         }
 
+        function createPetals() {
+            const petalColors = ['#ff9a9e', '#fad0c4', '#ffd1ff', '#fff', '#ffc0cb'];
+            for (let i = 0; i < 50; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                
+                // Random properties for each petal
+                const size = Math.random() * 15 + 10 + 'px';
+                petal.style.width = size;
+                petal.style.height = size;
+                petal.style.backgroundColor = petalColors[Math.floor(Math.random() * petalColors.length)];
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.opacity = Math.random();
+                petal.style.borderRadius = '50% 0 50% 50%'; // Petal shape
+                
+                // Random animation duration and delay
+                const duration = Math.random() * 3 + 4 + 's';
+                const delay = Math.random() * 5 + 's';
+                petal.style.animationDuration = duration;
+                petal.style.animationDelay = delay;
+                
+                document.body.appendChild(petal);
+                
+                // Remove petal after animation to keep DOM clean
+                setTimeout(() => petal.remove(), 10000);
+            }
+        }
+
         const lampContainer = document.getElementById('lamp-array');
 
         for (let i = 0; i < lampCount; i++) {
@@ -276,6 +315,7 @@
                     if (litCount === lampCount) {
                         document.getElementById('wish-banner').classList.add('show');
                         document.body.classList.add('all-lit');
+                        createPetals(); // Trigger the flower effect
                     }
                 }
             };
